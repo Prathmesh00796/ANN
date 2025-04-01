@@ -1,0 +1,39 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Importing data set
+df = pd.read_excel("D:\\aditya sy\\ANN\\Data sets\\Student_dataset.xlsx", engine='openpyxl')
+
+df = pd.DataFrame(df)
+
+Data = df[['12th Score', 'IQ']]
+
+x = Data[['12th Score']].values
+x = np.c_[np.ones(x.shape[0]), x]
+y = Data['IQ'].values.reshape(-1, 1)
+
+w = np.linalg.inv(x.T @ x) @ x.T @ y
+
+y_predict = x @ w
+
+e = y - y_predict
+
+print("\nPredicted IQ values:\n", y_predict)
+print("\nError (Residuals):\n", e)
+
+plt.figure(figsize=(8, 5))
+
+plt.scatter(df['12th Score'], df['IQ'], color='red', label="Actual Data")
+
+plt.plot(df['12th Score'], y_predict, color='blue', linewidth=2, label="Regression Line")
+
+for i in range(len(df)):
+    plt.plot([df['12th Score'][i], y[i, 0]], [df['12th Score'][i], y_predict[i, 0]], 'g--')
+
+plt.xlabel("12th Score")
+plt.ylabel("IQ")
+plt.title("Linear Regression: IQ vs. 12th Score")
+plt.legend()
+plt.grid()
+plt.show()
